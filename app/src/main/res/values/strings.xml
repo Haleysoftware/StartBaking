@@ -1,0 +1,25 @@
+<resources>
+
+    <!-- App and activity names -->
+    <string name="app_name">Start Baking</string>
+    <string name="title_recipestep_list">Recipe Steps</string>
+    <string name="title_recipestep_detail">Step Details</string>
+
+    <!-- Error messages for the main list of recipes -->
+    <string name="error_no_internet">Internet can\'t be reached.</string>
+    <string name="error_no_data">Recipe data not available.</string>
+
+    <!-- Used the main recipe list screen -->
+    <string name="serving">Servings: %1$d</string>
+
+    <!-- Used on the step detail screen -->
+    <string name="image_description">Image of the recipe step</string>
+    <string name="button_next">Next Step</string>
+    <string name="button_previous">Previous Step</string>
+
+    <!-- Used for the Widget -->
+    <string name="pref_key">bakepref</string>
+    <string name="ingredients_des">This is the list of ingredientString for your selected item.</string>
+    <string name="empty_widget">Touch to select Recipe</string>
+    <string name="add_widget">Add widget</string>
+</resources>
