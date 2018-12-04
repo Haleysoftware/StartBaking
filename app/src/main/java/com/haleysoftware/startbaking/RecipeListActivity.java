@@ -7,10 +7,9 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.preference.Preference;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,7 +17,6 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.haleysoftware.startbaking.utils.NetworkHelper;
 import com.haleysoftware.startbaking.utils.RecipeAdapter;
@@ -115,7 +113,6 @@ public class RecipeListActivity extends AppCompatActivity
             String prefKey = getString(R.string.pref_key);
             SharedPreferences preference = getSharedPreferences(prefKey, MODE_PRIVATE);
             SharedPreferences.Editor editor = preference.edit();
-            editor.putBoolean(widgetId + IngredWidgetProvider.PREF_FIRST_BOOL, false);
             editor.putString(widgetId + IngredWidgetProvider.PREF_NAME_STRING, currentItem.getName());
             editor.putString(widgetId + IngredWidgetProvider.PREF_ING_JSON, currentItem.getIngredientJson());
             editor.putString(widgetId + IngredWidgetProvider.PREF_ING_STRING, currentItem.getIngredientString());

@@ -1,9 +1,5 @@
 package com.haleysoftware.startbaking.utils;
 
-import android.arch.lifecycle.LiveData;
-
-import com.haleysoftware.startbaking.widget.IngredientItem;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,10 +8,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Handles JSON strings and creates a list of items for the main app.
+ * Creates a list of RecipeItems or StepItems.
+ * <p>
  * Created by haleysoft on 11/12/18.
  */
 final class ReadJson {
 
+    /**
+     * Takes a JSON string of recipes and returns a list of recipe items.
+     *
+     * @param jsonString The JSON string of recipes.
+     * @return The list of recipe items that was created from the JSON string.
+     * @throws JSONException The error is there was an issue with the JSON string.
+     */
     static List<RecipeItem> getRecipesFromJson(String jsonString) throws JSONException {
 
         final String MAIN_ID = "id"; //int
@@ -35,7 +41,7 @@ final class ReadJson {
         JSONArray results = new JSONArray(jsonString);
         int recipeLength = results.length();
         ArrayList<RecipeItem> parsedRecipes = new ArrayList<>(recipeLength);
-        for (int i = 0; i<recipeLength; i++) {
+        for (int i = 0; i < recipeLength; i++) {
             JSONObject recipe = results.getJSONObject(i);
 
             int mainId = recipe.getInt(MAIN_ID);
@@ -44,7 +50,7 @@ final class ReadJson {
             JSONArray mainMakes = recipe.getJSONArray(MAIN_MAKES);
             int makesLength = mainMakes.length();
             StringBuilder makesBuilder = new StringBuilder();
-            for (int j = 0; j<makesLength; j++) {
+            for (int j = 0; j < makesLength; j++) {
                 JSONObject make = mainMakes.getJSONObject(j);
 
                 int makeQuantity = make.getInt(MAKES_QUANTITY);
@@ -54,7 +60,7 @@ final class ReadJson {
                 makesBuilder.append(makeQuantity).append(makeMeasure).append(" ")
                         .append(makeIngredient);
 
-                if (j < makesLength-1) {
+                if (j < makesLength - 1) {
                     makesBuilder.append("\n");
                 }
             }
@@ -71,6 +77,13 @@ final class ReadJson {
         return parsedRecipes;
     }
 
+    /**
+     * Takes a JSON string of recipe steps and returns a list of step items.
+     *
+     * @param jsonString The JSON string of recipe steps.
+     * @return The list of step items that was created from the JSON string.
+     * @throws JSONException The error is there was an issue with the JSON string.
+     */
     static List<StepItem> getStepsFromJson(String jsonString) throws JSONException {
         final String STEPS_ID = "id"; //int
         final String STEPS_TITLE = "shortDescription"; //String
@@ -81,7 +94,7 @@ final class ReadJson {
         JSONArray stepArray = new JSONArray(jsonString);
         int stepsLength = stepArray.length();
         ArrayList<StepItem> parsedSteps = new ArrayList<>(stepsLength);
-        for (int i = 0; i<stepsLength; i++) {
+        for (int i = 0; i < stepsLength; i++) {
             JSONObject step = stepArray.getJSONObject(i);
 
             int id = step.getInt(STEPS_ID);
@@ -94,6 +107,4 @@ final class ReadJson {
         }
         return parsedSteps;
     }
-
-
 }

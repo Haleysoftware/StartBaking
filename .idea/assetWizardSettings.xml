@@ -23,7 +23,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="color" value="a6040e" />
+                                                <entry key="color" value="0288d1" />
                                                 <entry key="scalingPercent" value="95" />
                                               </map>
                                             </option>
@@ -46,7 +46,7 @@
                                   <option name="values">
                                     <map>
                                       <entry key="backgroundAssetType" value="COLOR" />
-                                      <entry key="backgroundColor" value="ffef2c" />
+                                      <entry key="backgroundColor" value="8bc34a" />
                                       <entry key="foregroundAssetType" value="CLIP_ART" />
                                     </map>
                                   </option>

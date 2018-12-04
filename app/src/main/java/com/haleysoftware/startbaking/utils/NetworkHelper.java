@@ -14,6 +14,8 @@ import java.util.Scanner;
 
 /**
  * Created by haleysoft on 11/12/18.
+ * <p>
+ * Class that handles all of the network calls.
  */
 public class NetworkHelper {
 
@@ -29,18 +31,22 @@ public class NetworkHelper {
     public static boolean hasInternet(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork;
-        try {
-            activeNetwork = cm.getActiveNetworkInfo();
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-            return false;
+        if (cm != null) {
+            try {
+                activeNetwork = cm.getActiveNetworkInfo();
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+                return false;
+            }
+            return activeNetwork != null && activeNetwork.isConnected();
         }
-        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+        return false;
     }
 
     /**
+     * Builds and returns the URL
      *
-     * @return
+     * @return The URL to use to get the Recipe list.
      */
     static URL urlBuilder() {
         Uri builtUri = Uri.parse(URI_PATH).buildUpon().build();
@@ -54,10 +60,11 @@ public class NetworkHelper {
     }
 
     /**
+     * Uses the URL to get the JSON file of recipes.
      *
-     * @param url
-     * @return
-     * @throws IOException
+     * @param url The JSON file URL address.
+     * @return the JSON string for the recipes.
+     * @throws IOException The error if there is an issue with the network.
      */
     static String internetResponse(URL url) throws IOException {
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();

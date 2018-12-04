@@ -2,9 +2,11 @@ package com.haleysoftware.startbaking.utils;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
 /**
+ * A step item to hold the data for each step in a recipe.
+ * This item is parcelable and can be passed by intent.
+ *
  * Created by haleysoft on 11/12/18.
  */
 public class StepItem implements Parcelable {
@@ -21,12 +23,13 @@ public class StepItem implements Parcelable {
     private String image;
 
     /**
+     * Creates the step item
      *
-     * @param id
-     * @param title
-     * @param description
-     * @param video
-     * @param image
+     * @param id The ID number of the step. Not used but here if needed.
+     * @param title The title of the step. Used for the step list.
+     * @param description The body or instructions of the step.
+     * @param video URL address for the step video.
+     * @param image URL address for the step image.
      */
     public StepItem(int id, String title, String description, String video, String image) {
         this.id = id;
@@ -37,6 +40,7 @@ public class StepItem implements Parcelable {
     }
 
     /**
+     * 
      *
      * @return
      */

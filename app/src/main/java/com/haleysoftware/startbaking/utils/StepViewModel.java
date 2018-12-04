@@ -1,6 +1,5 @@
 package com.haleysoftware.startbaking.utils;
 
-import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
@@ -12,6 +11,8 @@ import org.json.JSONException;
 import java.util.List;
 
 /**
+ * The ViewModel for the step list to create live data from the JSON string.
+ * <p>
  * Created by haleysoft on 11/15/18.
  */
 public class StepViewModel extends ViewModel {
@@ -19,16 +20,18 @@ public class StepViewModel extends ViewModel {
     private static MutableLiveData<List<StepItem>> stepLiveData = new MutableLiveData<>();
 
     /**
+     * Creates the view model and starts the data load.
      *
-     * @param jsonString
+     * @param jsonString The JSON string used to create the list of steps.
      */
-    public StepViewModel(@NonNull String jsonString) {
+    StepViewModel(@NonNull String jsonString) {
         loadStepData(jsonString);
     }
 
     /**
+     * Loads data into a list of step items for the step list activity.
      *
-     * @param jsonString
+     * @param jsonString The JSON string used to create the list of steps.
      */
     private static void loadStepData(String jsonString) {
         new AsyncTask<String, Void, List<StepItem>>() {
@@ -52,8 +55,9 @@ public class StepViewModel extends ViewModel {
     }
 
     /**
+     * Returns the live data of step items.
      *
-     * @return
+     * @return The live data in form of a list of step items.
      */
     public LiveData<List<StepItem>> getStepList() {
         return stepLiveData;

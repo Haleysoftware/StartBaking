@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.card.MaterialCardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/card_view"
     style="@style/Widget.MaterialComponents.CardView"
@@ -10,12 +9,12 @@
     android:layout_marginTop="@dimen/card_spacing"
     android:layout_marginRight="@dimen/card_spacing"
     android:minWidth="350dp"
-    android:minHeight="150dp" >
+    android:minHeight="150dp">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <ImageView
             android:id="@+id/iv_image_recipe"
@@ -24,22 +23,23 @@
 
         <TextView
             android:id="@+id/tv_title_recipe"
-            android:textStyle="bold"
-            android:textSize="40sp"
-            android:padding="20dp"
-            android:gravity="center"
-            tools:text="Brownies"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="20dp"
+            android:textSize="40sp"
+            android:textStyle="bold"
+            tools:text="Brownies" />
 
         <TextView
             android:id="@+id/tv_serve_recipe"
-            android:textSize="20sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:gravity="end"
             android:padding="20dp"
-            tools:text="Servings: 8"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:textColor="@color/colorSecondaryText"
+            android:textSize="20sp"
+            tools:text="Servings: 8" />
 
     </LinearLayout>
 </android.support.design.card.MaterialCardView>
