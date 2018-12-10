@@ -11,18 +11,29 @@ import java.net.URL;
 import java.util.List;
 
 /**
+ * The live data view model for the recipe item data.
+ * <p>
  * Created by haleysoft on 11/13/18.
  */
 public class RecipeViewModel extends AndroidViewModel {
 
     private static MutableLiveData<List<RecipeItem>> listLiveData = new MutableLiveData<>();
 
+    /**
+     * Creates the view model and starts loading the data.
+     *
+     * @param application The calling activity.
+     */
     public RecipeViewModel(@NonNull Application application) {
         super(application);
         loadRecipeData();
     }
 
+    /**
+     * Loads the recipe data from the stored URL and passes it to the class for JSON strings.
+     */
     private static void loadRecipeData() {
+
         new AsyncTask<Void, Void, List<RecipeItem>>() {
 
             @Override
@@ -45,6 +56,11 @@ public class RecipeViewModel extends AndroidViewModel {
         }.execute();
     }
 
+    /**
+     * Returns the list of RecipeItems from the Live Data.
+     *
+     * @return The list of RecipeItems.
+     */
     public LiveData<List<RecipeItem>> getRecipeList() {
         return listLiveData;
     }

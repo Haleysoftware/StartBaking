@@ -33,7 +33,6 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
-import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DataSource;
@@ -41,12 +40,14 @@ import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.haleysoftware.startbaking.utils.StepItem;
 
-
 import butterknife.BindBool;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
+ * This fragment displays the details of one step of the recipe.
+ * If a video or image URL is present, it displays it.
+ * <p>
  * Created by haleysoft on 11/16/18.
  */
 public class StepDetailFragment extends Fragment implements Player.EventListener {
@@ -64,7 +65,6 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
 
     @BindView(R.id.scrolling_text)
     ScrollView scrollText;
-
 
     @BindView(R.id.tv_direction)
     TextView direction;
@@ -89,6 +89,11 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
     public StepDetailFragment() {
     }
 
+    /**
+     * The fragment has been attached to an activity.
+     *
+     * @param context The context of the attached activity.
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -101,6 +106,14 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
         }
     }
 
+    /**
+     * Creates and sets up the views of the fragment.
+     *
+     * @param inflater           The layout inflater for the fragment.
+     * @param container          The view container for the fragment.
+     * @param savedInstanceState The saved instance from the system.
+     * @return The view that was inflated to display.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -128,9 +141,17 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
                 }
             });
         }
+
         return rootView;
     }
 
+    /**
+     * The attached activity has been created.
+     * Need to start the media session and player.
+     * Collect the
+     *
+     * @param savedInstanceState The saved instance from the system.
+     */
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -139,7 +160,7 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
 
         if (!stepItem.getImage().isEmpty()) {
             initializePlayer(stepItem.getImage());
-        }else if (!stepItem.getVideo().isEmpty()) {
+        } else if (!stepItem.getVideo().isEmpty()) {
             initializePlayer(stepItem.getVideo());
         } else {
             exoPlayerView.setDefaultArtwork(BitmapFactory.decodeResource(getResources(),
@@ -147,6 +168,7 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
             initializePlayer("");
         }
 
+        // If the previous button is active, display the description else the ingredients.
         if (previousActive) {
             direction.setText(stepItem.getDescription());
         } else {
@@ -154,6 +176,10 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
         }
     }
 
+    /**
+     * The fragment is being destroyed.
+     * The player and session need to be turned off.
+     */
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -161,6 +187,12 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
         mediaSession.setActive(false);
     }
 
+    /**
+     * Hides or shows views if the device is in landscape or not.
+     * Only used on phones.
+     *
+     * @param isLandscape True if phone is in landscape.
+     */
     public void fullscreenMode(boolean isLandscape) {
         if (isLandscape) {
             nextButton.setVisibility(View.GONE);
@@ -173,19 +205,36 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
         }
     }
 
+    /**
+     * Sets the step item to be displayed.
+     *
+     * @param stepItem The current step item.
+     */
     public void setStepItem(StepItem stepItem) {
         this.stepItem = stepItem;
     }
 
+    /**
+     * Sets the ingredient string that is displayed on the first step.
+     *
+     * @param ingredients The recipe ingredients in string format.
+     */
     public void setIngredients(String ingredients) {
         this.ingredients = ingredients;
     }
 
+    /**
+     * Controls weather the next and previous buttons should be active or not.
+     * Prevents going below 0 and over the size of the list.
+     *
+     * @param id   The ID of the current recipe step.
+     * @param size The size of the recipe step list.
+     */
     public void setButtonState(int id, int size) {
         if (id == 0) {
             this.nextActive = true;
             this.previousActive = false;
-        } else if (id == size-1) {
+        } else if (id == size - 1) {
             this.nextActive = false;
             this.previousActive = true;
         } else {
@@ -196,6 +245,9 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
 
     //************************* Exo Player *************************
 
+    /**
+     * Creates the media session.
+     */
     private void initializeMediaSession() {
         if (getContext() != null) {
 
@@ -229,6 +281,11 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
         }
     }
 
+    /**
+     * Sets the player up and loads the content.
+     *
+     * @param url The URL for the video.
+     */
     private void initializePlayer(String url) {
         if (getContext() != null) {
             BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
@@ -244,13 +301,11 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
             exoPlayerView.hideController();
 
             DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(getContext(),
-                     "StartBaking");
+                    "StartBaking");
 
             ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
 
             Uri uri = Uri.parse(url);
-
-//            MediaSource mediaSource = new ExtractorMediaSource(uri, dataSourceFactory, extractorsFactory, null, null);
 
             MediaSource mediaSource = new ExtractorMediaSource.Factory(dataSourceFactory)
                     .setExtractorsFactory(extractorsFactory).createMediaSource(uri);
@@ -260,7 +315,9 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
         }
     }
 
-
+    /**
+     * Releases the player when the fragment is going away.
+     */
     private void releasePlayer() {
         if (exoPlayer != null) {
             exoPlayer.stop();
@@ -270,64 +327,81 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
         }
     }
 
-
+    // Not used
     @Override
     public void onTimelineChanged(Timeline timeline, Object manifest, int reason) {
 
     }
 
+    // Not used
     @Override
     public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
 
     }
 
+    // Not used
     @Override
     public void onLoadingChanged(boolean isLoading) {
 
     }
 
+    /**
+     * Triggers when the exo player changes state and handles the state change.
+     *
+     * @param playWhenReady If video should start playing when loaded.
+     * @param playbackState The current state of the player.
+     */
     @Override
     public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-        if((playbackState == ExoPlayer.STATE_READY) && playWhenReady){
+        if ((playbackState == ExoPlayer.STATE_READY) && playWhenReady) {
             mStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING,
                     exoPlayer.getCurrentPosition(), 1f);
-        } else if((playbackState == ExoPlayer.STATE_READY)){
+        } else if ((playbackState == ExoPlayer.STATE_READY)) {
             mStateBuilder.setState(PlaybackStateCompat.STATE_PAUSED,
                     exoPlayer.getCurrentPosition(), 1f);
         }
         mediaSession.setPlaybackState(mStateBuilder.build());
     }
 
+    // Not used
     @Override
     public void onRepeatModeChanged(int repeatMode) {
 
     }
 
+    // Not used
     @Override
     public void onShuffleModeEnabledChanged(boolean shuffleModeEnabled) {
 
     }
 
+    // Not used
     @Override
     public void onPlayerError(ExoPlaybackException error) {
 
     }
 
+    // Not used
     @Override
     public void onPositionDiscontinuity(int reason) {
 
     }
 
+    // Not used
     @Override
     public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
 
     }
 
+    // Not used
     @Override
     public void onSeekProcessed() {
 
     }
 
+    /**
+     * Handles the media player button calls.
+     */
     private class MySessionCallback extends MediaSessionCompat.Callback {
         @Override
         public void onPlay() {

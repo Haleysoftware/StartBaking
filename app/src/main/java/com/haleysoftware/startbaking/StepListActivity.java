@@ -3,14 +3,17 @@ package com.haleysoftware.startbaking;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
+import android.support.test.espresso.IdlingResource;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 
-import com.haleysoftware.startbaking.utils.RecipeItem;
+import com.haleysoftware.startbaking.Testing.CookingIdlingResource;
 import com.haleysoftware.startbaking.utils.StepAdapter;
 import com.haleysoftware.startbaking.utils.StepFactory;
 import com.haleysoftware.startbaking.utils.StepItem;
@@ -22,6 +25,12 @@ import java.util.List;
 import butterknife.BindBool;
 import butterknife.ButterKnife;
 
+/**
+ * Controls the activity and fragment that displays the list of recipe steps.
+ * On a tablet, it also shows the selected recipe step.
+ * <p>
+ * Created by haleysoft on 11/16/18.
+ */
 public class StepListActivity extends AppCompatActivity implements StepAdapter.StepOnClickHandler,
         StepDetailFragment.OnButtonClickListener {
 
@@ -35,6 +44,15 @@ public class StepListActivity extends AppCompatActivity implements StepAdapter.S
     private String recipeName;
     private String ingredientString;
 
+    // The Idling Resource which will be null in production.
+    @Nullable
+    private CookingIdlingResource idlingResource;
+
+    /**
+     * Unpacks the passed intent to extract the needed data.
+     *
+     * @param savedInstanceState Instance state from the system.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +77,15 @@ public class StepListActivity extends AppCompatActivity implements StepAdapter.S
         }
     }
 
+    /**
+     * The click handler for the step list fragment and adapter.
+     * The ID and list size are used to control if the next and previous buttons should be active.
+     * On a phone, it starts a new activity to display the step.
+     * On a tablet, it changes out the step fragment with one for the selected step.
+     *
+     * @param id           The id or location in the list of the clicked step item.
+     * @param stepItemList The list of steps.
+     */
     @Override
     public void onClick(int id, List<StepItem> stepItemList) {
         if (isTablet) {
@@ -80,7 +107,18 @@ public class StepListActivity extends AppCompatActivity implements StepAdapter.S
         }
     }
 
+    /**
+     * Takes the JSON string for the recipe steps and creates the list. If on a tablet, also
+     * creates a fragment with the first step to display.
+     *
+     * @param stepJson The JSON string to use for the list.
+     */
     private void getStepData(String stepJson) {
+
+        if (idlingResource != null) {
+            idlingResource.setIdleState(false);
+        }
+
         StepViewModel viewModel = ViewModelProviders.of(this, new StepFactory(stepJson))
                 .get(StepViewModel.class);
         viewModel.getStepList().observe(this, new Observer<List<StepItem>>() {
@@ -103,12 +141,34 @@ public class StepListActivity extends AppCompatActivity implements StepAdapter.S
                                 .commit();
                     }
                 }
+                if (idlingResource != null) {
+                    idlingResource.setIdleState(true);
+                }
             }
         });
     }
 
+    //************************* Test Code *************************
+
+    /**
+     * This is only used in tablet mode and these buttons are gone in that mode.
+     *
+     * @param buttonId The button that was pressed.
+     */
     @Override
     public void onButtonPress(int buttonId) {
         //Do nothing. No buttons in Tablet mode
+    }
+
+    /**
+     * Sends the idling resource to the test code
+     */
+    @VisibleForTesting
+    @NonNull
+    public IdlingResource getIdlingResource() {
+        if (idlingResource == null) {
+            idlingResource = new CookingIdlingResource();
+        }
+        return idlingResource;
     }
 }

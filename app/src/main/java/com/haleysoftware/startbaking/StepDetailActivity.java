@@ -2,28 +2,33 @@ package com.haleysoftware.startbaking;
 
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.os.Build;
-import android.support.constraint.ConstraintLayout;
+import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.view.Window;
 import android.view.WindowManager;
 
 import com.haleysoftware.startbaking.utils.StepItem;
 
 import java.util.List;
 
+/**
+ * Activity for displaying recipe details while on a phone.
+ * This is not used on tablets.
+ * <p>
+ * Created by haleysoft on 11/16/18.
+ */
 public class StepDetailActivity extends AppCompatActivity implements StepDetailFragment.OnButtonClickListener {
-
-    private static ConstraintLayout.LayoutParams paramsNotFullscreen;
 
     private int id;
     private List<StepItem> stepItems;
     private String ingredients;
 
+    /**
+     * Creates and sets up the detail view fragment.
+     *
+     * @param savedInstanceState The saved instance from the system.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +58,12 @@ public class StepDetailActivity extends AppCompatActivity implements StepDetailF
         }
     }
 
+    /**
+     * The phone was rotated and this handles what views that need to be hidden and makes
+     * the app full screen.
+     *
+     * @param newConfig The current phone orientation.
+     */
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -65,20 +76,21 @@ public class StepDetailActivity extends AppCompatActivity implements StepDetailF
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE
                 && fragment != null && toolbar != null) {
             fragment.fullscreenMode(true);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-            }
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
             toolbar.hide();
         } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT
                 && fragment != null && toolbar != null) {
             fragment.fullscreenMode(false);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-            }
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
             toolbar.show();
         }
     }
 
+    /**
+     * Handles the button clicks to change the recipe step to the next or previous step.
+     *
+     * @param buttonId The button that was clicked.
+     */
     @Override
     public void onButtonPress(int buttonId) {
         FragmentManager fragmentManager = getSupportFragmentManager();

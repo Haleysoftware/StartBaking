@@ -17,19 +17,10 @@ import com.haleysoftware.startbaking.StepListActivity;
 
 /**
  * Implementation of App Widget functionality.
+ * <p>
+ * Created by haleysoft on 11/27/18.
  */
-public class IngredWidgetProvider extends AppWidgetProvider {
-
-
-    /**
-     * Need to save the following into pref
-     *
-     * bool for if new widget
-     * recipe name String
-     * ingredient Json String
-     * ingredient String
-     * step Json String
-     */
+public class RecipeWidgetProvider extends AppWidgetProvider {
 
     public static final String WIDGET_PICKER_BOOL = "widget_pick";
     public static final String WIDGET_PICKER_ID = "widget_id";
@@ -39,8 +30,13 @@ public class IngredWidgetProvider extends AppWidgetProvider {
     public static final String PREF_ING_STRING = "_ingredient_string";
     public static final String PREF_STEP_JSON = "_step_json";
 
-
-
+    /**
+     * Called by onUpdate. Sets the views, loads the data and sets onClicks.
+     *
+     * @param context          Context from onUpdate.
+     * @param appWidgetManager Widget Manager from onUpdate.
+     * @param appWidgetId      The ID of the current widget being updated.
+     */
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_list_view); //Edit
@@ -70,6 +66,13 @@ public class IngredWidgetProvider extends AppWidgetProvider {
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.sv_widget_holder);
     }
 
+    /**
+     * Sets up the onClick for the view that shows when the list is empty.
+     *
+     * @param context     Context passed from onUpdate.
+     * @param views       The RemoteViews for the widget.
+     * @param appWidgetId The ID of the current widget.
+     */
     private static void setupEmptyClick(Context context, RemoteViews views, int appWidgetId) {
         Intent intent = new Intent(context, RecipeListActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -80,6 +83,14 @@ public class IngredWidgetProvider extends AppWidgetProvider {
         views.setOnClickPendingIntent(R.id.tv_widget_empty, pendingIntentFirst);
     }
 
+    /**
+     * Sets up the onClick for the list name view. Passes the data for the list and recipe name.
+     *
+     * @param context     Context passed from onUpdate.
+     * @param preferences The Shared Preference that holds the data.
+     * @param views       The RemoteViews for the widget.
+     * @param appWidgetId The ID of the current widget.
+     */
     private static void setupListClick(Context context, SharedPreferences preferences,
                                        RemoteViews views, int appWidgetId) {
         String recipeName = preferences.getString(appWidgetId + PREF_NAME_STRING, "");
@@ -96,6 +107,13 @@ public class IngredWidgetProvider extends AppWidgetProvider {
         views.setOnClickPendingIntent(R.id.tv_widget_name, pendingIntentStep);
     }
 
+    /**
+     * Called by the system when the widgets need to be updated. Calls the widget method.
+     *
+     * @param context          Context used to update the widgets.
+     * @param appWidgetManager The manager of the widgets.
+     * @param appWidgetIds     The list of IDs of all active widgets.
+     */
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // There may be multiple widgets active, so update all of them
@@ -104,6 +122,13 @@ public class IngredWidgetProvider extends AppWidgetProvider {
         }
     }
 
+    /**
+     * Called when a widget is removed. Removes the preference data for the deleted widget.
+     * This saves space for unused widgets.
+     *
+     * @param context      Context needed for deleting data.
+     * @param appWidgetIds The IDs of the widgets that were deleted.
+     */
     @Override
     public void onDeleted(Context context, int[] appWidgetIds) {
         super.onDeleted(context, appWidgetIds);
@@ -119,16 +144,23 @@ public class IngredWidgetProvider extends AppWidgetProvider {
         editor.apply();
     }
 
-    @Override
-    public void onRestored(Context context, int[] oldWidgetIds, int[] newWidgetIds) {
-        super.onRestored(context, oldWidgetIds, newWidgetIds);
-    }
-
+    /**
+     * This triggers when the first widget is created. Not used.
+     * Could create the preference file but no need as it is created when first used.
+     *
+     * @param context The context from the system.
+     */
     @Override
     public void onEnabled(Context context) {
-        // Enter relevant functionality for when the first widget is created
+        // Left blank
     }
 
+    /**
+     * When all of the widgets are deleted, this will delete the preference since it is no
+     * longer needed.
+     *
+     * @param context The context from the system.
+     */
     @Override
     public void onDisabled(Context context) {
         // Enter relevant functionality for when the last widget is disabled
